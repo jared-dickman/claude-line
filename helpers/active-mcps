@@ -1,13 +1,47 @@
-#!/bin/bash
-# Outputs active MCP server names, one per line
-# Reads from ~/.claude.json (global) and .mcp.json (project-local)
-set -euo pipefail
+#!/usr/bin/env bash
+# Outputs ACTIVE (connected + not disabled) MCP server short names, space-separated.
+# Uses per-cwd cache with 30s TTL to avoid slow `claude mcp list` on every render.
+# Reads disabledMcpServers from ~/.claude.json (longest project path match).
+export PATH="/opt/homebrew/bin:$PATH"
 
-print_servers() {
-    local file="$1"
-    [[ -f "$file" ]] || return 0
-    jq -r '.mcpServers // {} | keys[]' "$file" 2>/dev/null || true
+ck=$(echo "$PWD" | md5 2>/dev/null || echo "$PWD" | md5sum 2>/dev/null | cut -d' ' -f1)
+CF="/tmp/active-mcps-$ck"; TTL=30
+
+if [[ -f "$CF" ]]; then
+    mt=$(stat -f %m "$CF" 2>/dev/null || stat -c %Y "$CF" 2>/dev/null)
+    (( $(date +%s) - mt < TTL )) && cat "$CF" && exit 0
+fi
+
+r=$(claude mcp list 2>/dev/null | grep Connected | python3 -c "
+import sys, json, os
+d = set()
+try:
+    with open(os.path.expanduser('~/.claude.json')) as f:
+        c = json.load(f)
+    w = os.getcwd(); bm = ''; bd = []
+    for p, v in c.get('projects', {}).items():
+        if (w == p or w.startswith(p + '/')) and len(p) > len(bm):
+            bm = p; bd = v.get('disabledMcpServers', [])
+    d = {n.lower() for n in bd}
+except:
+    pass
+S = {
+    'chrome-devtools': 'chrome', 'playwright': 'pw', 'serena': 'serena',
+    'jina': 'jina', 'supabase': 'sb', 'vercel': 'vercel',
+    'agent-mail': 'mail', 'n8n': 'n8n',
 }
+o = []
+for l in sys.stdin:
+    l = l.strip()
+    if not l: continue
+    n = l.split(' - ')[0].rsplit(' ', 1)[0].strip() if ' - ' in l else l.split(':')[0].strip()
+    if n.lower() in d: continue
+    if n.startswith('claude.ai '): n = n[10:]
+    elif n.startswith('plugin:'): n = n.split(':')[-1].strip()
+    dl = n.lower()
+    s = next((v for k, v in S.items() if k in dl), dl.replace('mcp-server-', '').replace('-mcp', '')[:8])
+    if s not in o: o.append(s)
+print(' '.join(o))
+")
 
-print_servers "$HOME/.claude.json"
-print_servers ".mcp.json"
+echo "$r" > "$CF"; echo "$r"

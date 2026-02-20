@@ -8,11 +8,19 @@ SETTINGS="$DEST/settings.json"
 
 echo "🌿 Installing claude-line..."
 
-# Copy files
+# Copy statusline files
 cp "$SCRIPT_DIR/statusline-command.sh" "$DEST/"
 rm -rf "$DEST/statusline"
 cp -r "$SCRIPT_DIR/statusline" "$DEST/statusline"
 chmod +x "$DEST/statusline-command.sh" "$DEST/statusline/"*.sh "$DEST/statusline/segments/"*.sh
+
+# Install helper scripts
+mkdir -p "$HOME/.local/bin"
+if [[ -d "$SCRIPT_DIR/helpers" ]]; then
+    cp "$SCRIPT_DIR/helpers/"* "$HOME/.local/bin/"
+    chmod +x "$HOME/.local/bin/active-mcps"
+    echo "✓ Installed helpers to ~/.local/bin/"
+fi
 
 # Wire up settings.json
 if [[ -f "$SETTINGS" ]]; then

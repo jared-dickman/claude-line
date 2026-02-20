@@ -13,22 +13,12 @@ segment_infra() {
         fi
     fi
 
-    # Active MCPs (each server in its own color)
+    # Active MCPs (all orange 208 — script returns space-separated short names)
     if [[ -x "$HOME/.local/bin/active-mcps" ]]; then
         mcps_out="$("$HOME/.local/bin/active-mcps" 2>/dev/null || true)"
+        mcps_out="$(echo "$mcps_out" | tr -s '[:space:]' | sed 's/^ //;s/ $//')"
         if [[ -n "$mcps_out" ]]; then
-            sep
-            printf "mcp:"
-            mcp_idx=0
-            first=1
-            while IFS= read -r mcp; do
-                [[ -z "$mcp" ]] && continue
-                if [[ $first -eq 0 ]]; then printf " "; fi
-                first=0
-                c="${MCP_COLORS[$((mcp_idx % ${#MCP_COLORS[@]}))]}"
-                color "$mcp" "$c"
-                mcp_idx=$((mcp_idx + 1))
-            done <<< "$mcps_out"
+            sep; color "mcp:${mcps_out}" "$C_ORANGE"
         fi
     fi
 }
