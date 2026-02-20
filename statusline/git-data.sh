@@ -2,7 +2,7 @@
 # Collect all git data into variables for segment consumption
 
 wt_name="" branch="" commit_msg="" commit_age="" dirty=0 stash=0
-pr_num="" pr_url="" pr_commits="" jira_ticket=""
+pr_num="" pr_url="" pr_commits=""
 ci_status="" ci_fail_url=""
 test_fail=0
 in_git=0
@@ -29,10 +29,6 @@ if [[ -d "$cwd" ]]; then
 
         dirty=$(git status --short 2>/dev/null | wc -l | tr -d ' ')
         stash=$(git stash list 2>/dev/null | wc -l | tr -d ' ')
-
-        if [[ "$branch" =~ ([A-Z]+-[0-9]+) ]]; then
-            jira_ticket="${BASH_REMATCH[1]}"
-        fi
 
         pr_json="$(gh pr view --json number,url,state,commits 2>/dev/null || echo "")"
         if [[ -n "$pr_json" ]]; then

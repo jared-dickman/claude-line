@@ -1,5 +1,5 @@
 #!/bin/bash
-# Segment: test failure + 📁 files changed (Purple 141)
+# Segment: test failure + 📝 files changed (Purple 141)
 
 segment_dirty() {
     # Test failure
@@ -9,6 +9,6 @@ segment_dirty() {
 
     # Files changed
     if [[ -n "$dirty" && "$dirty" != "0" ]]; then
-        printf " 📁 "; color "$dirty" "$C_PURPLE"
+        printf " 📝 "; color "$dirty" "$C_PURPLE"
     fi
 }

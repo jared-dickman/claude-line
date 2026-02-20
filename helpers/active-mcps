@@ -1,0 +1,13 @@
+#!/bin/bash
+# Outputs active MCP server names, one per line
+# Reads from ~/.claude.json (global) and .mcp.json (project-local)
+set -euo pipefail
+
+print_servers() {
+    local file="$1"
+    [[ -f "$file" ]] || return 0
+    jq -r '.mcpServers // {} | keys[]' "$file" 2>/dev/null || true
+}
+
+print_servers "$HOME/.claude.json"
+print_servers ".mcp.json"

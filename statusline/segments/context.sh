@@ -10,7 +10,7 @@ segment_context() {
     if [[ -n "$raw_pct" ]]; then
         used_pct="$(awk "BEGIN { v=($raw_pct/$COMPACT_THRESHOLD)*100; if(v>100) v=100; printf \"%.0f\", v }")"
     fi
-    total_cost="$(echo "$input" | jq -r '.context_window.total_cost_usd // empty')"
+    total_cost="$(echo "$input" | jq -r '.cost.total_cost_usd // empty')"
 
     if [[ -n "$used_pct" ]]; then
         if   (( used_pct > 80 ));  then ctx_col="$C_RED"

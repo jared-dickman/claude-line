@@ -1,12 +1,7 @@
 #!/bin/bash
-# Segment: jira ticket, #PR ✓/✗/○ commits, stash
+# Segment: #PR ✓/✗/○ commits, stash
 
 segment_pr() {
-    # Jira ticket (Purple 141, clickable)
-    if [[ -n "$jira_ticket" ]]; then
-        sep; link "$jira_ticket" "https://rokt.atlassian.net/browse/$jira_ticket" "$C_PURPLE"
-    fi
-
     # PR number + CI status + commit count
     if [[ -n "$pr_num" ]]; then
         sep

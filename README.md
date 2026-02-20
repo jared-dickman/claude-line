@@ -7,30 +7,32 @@
     ██║     ██║     ██╔══██║██║   ██║██║  ██║██╔══╝  ╚════╝██║     ██║██║╚██╗██║██╔══╝
     ╚██████╗███████╗██║  ██║╚██████╔╝██████╔╝███████╗      ███████╗██║██║ ╚████║███████╗
      ╚═════╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝      ╚══════╝╚═╝╚═╝  ╚═══╝╚══════╝
-
-    ┌──────────────────────────────────────────────────────────────────────────────────────┐
-    │ 🌿 nalu │ main │ "fix: upgrade all ast-grep" 33m 📁 1 │ #16 ✗ 32 │ ctx:78% │ $1.50│
-    └──────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 > **A modular, portable statusline for [Claude Code](https://docs.anthropic.com/en/docs/claude-code).**
 > One install. Every machine. Forever.
 
+### Full Example (all segments active)
+
+```
+🌿 myapp │ feat/auth │ "add OAuth2 login flow" 14m ❌ 📝 7 │ #42 ✗ 12 │ stash:2 │ :3000 │ mcp:chrome serena │ ctx:78% │ $1.50
+```
+
+| Segment | What's showing |
+|---------|---------------|
+| `🌿 myapp` | Worktree name (cyan) |
+| `feat/auth` | Branch name (blue) |
+| `"add OAuth2 login flow" 14m` | Last commit in quotes + age (purple + gray) |
+| `❌` | Test failure detected |
+| `📝 7` | 7 dirty files (purple) |
+| `#42 ✗ 12` | PR #42, CI failing, 12 commits (purple + bare + gray) |
+| `stash:2` | 2 stashes (red) |
+| `:3000` | Localhost port clickable (green) |
+| `mcp:chrome serena` | Active MCP servers (each own color) |
+| `ctx:78%` | Context scaled to compaction (yellow) |
+| `$1.50` | Session cost (gray) |
+
 ---
-
-## Features
-
-- **🌿 Worktree** — repo name with plant emoji
-- **Branch** — skipped if it matches worktree name
-- **"Commit" age** — last commit in quotes + relative time
-- **📁 Dirty count** — files changed with folder emoji
-- **Jira ticket** — extracted from branch name, clickable OSC 8 link
-- **PR + CI + Commits** — `#N ✓/✗/○ Nc` with clickable links
-- **Stash warning** — red `stash:N` when stashes exist
-- **Localhost ports** — each port clickable (via `~/.local/bin/localhost-ports`)
-- **MCP servers** — each server in its own color (via `~/.local/bin/active-mcps`)
-- **Context %** — scaled to compaction threshold, not raw usage
-- **Session cost** — hidden when zero
 
 ## Quick Install
 
@@ -40,7 +42,7 @@ cd claude-line
 ./install.sh
 ```
 
-That's it. Restart Claude Code and your statusline is live.
+Restart Claude Code. Done.
 
 ## Manual Install
 
@@ -71,8 +73,8 @@ statusline/
     ├── worktree.sh            ← 🌿 repo name
     ├── branch.sh              ← branch name
     ├── commit.sh              ← "msg" age
-    ├── dirty.sh               ← 📁 N + ❌ test fail
-    ├── pr.sh                  ← jira, PR, CI, stash
+    ├── dirty.sh               ← 📝 N + ❌ test fail
+    ├── pr.sh                  ← PR, CI, stash
     ├── infra.sh               ← ports, MCPs
     └── context.sh             ← ctx:N% + $cost
 ```
@@ -101,8 +103,8 @@ Default threshold: `77`. Override with `COMPACT_THRESHOLD` env var.
 | Branch | Blue | `38;5;75` |
 | Commit msg | Purple | `38;5;141` |
 | Commit age | Gray | `38;5;240` |
-| Files changed (📁) | Purple | `38;5;141` |
-| Jira / PR number | Purple | `38;5;141` |
+| Files changed (📝) | Purple | `38;5;141` |
+| PR number | Purple | `38;5;141` |
 | PR status (✓/✗/○) | Bare text | — |
 | PR commits | Gray | `38;5;240` |
 | Stash | Red | `38;5;196` |
