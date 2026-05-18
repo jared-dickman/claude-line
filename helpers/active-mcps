@@ -20,11 +20,11 @@ d = set()
 try:
     with open(os.path.expanduser('~/.claude.json')) as f:
         c = json.load(f)
-    w = os.getcwd(); bm = ''; bd = []
+    w = os.getcwd(); bm = ''; disabled_servers = []
     for p, v in c.get('projects', {}).items():
         if (w == p or w.startswith(p + '/')) and len(p) > len(bm):
-            bm = p; bd = v.get('disabledMcpServers', [])
-    d = {n.lower() for n in bd}
+            bm = p; disabled_servers = v.get('disabledMcpServers', [])
+    d = {n.lower() for n in disabled_servers}
 except:
     pass
 
@@ -32,7 +32,7 @@ except:
 S = {
     'chrome-devtools': 'chrome', 'playwright': 'pw', 'serena': 'serena',
     'jina': 'jina', 'supabase': 'sb', 'vercel': 'vercel',
-    'agent-mail': 'mail', 'n8n': 'n8n',
+    'n8n': 'n8n',
 }
 
 o = []
